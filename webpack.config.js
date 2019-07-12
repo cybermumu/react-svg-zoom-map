@@ -5,13 +5,13 @@ const path = require('path');
 module.exports = {
   context: __dirname,
   entry: {
-    dev: './dev.js'
+    main: './src/index.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'react-svg-zoom-map.min.js',
     sourceMapFilename: '[file].map',
-    library: 'ReactSvgZoomMap',
+    library: 'react-svg-zoom-map',
     libraryTarget: 'umd'
   },
   externals: {
@@ -26,7 +26,9 @@ module.exports = {
       'commonjs2': 'react-dom',
       'amd': 'react-dom',
       'root': 'ReactDOM'
-    }
+    },
+    d3: 'd3',
+    topojson: 'topojson-client'
   },
   module: {
     rules: [
