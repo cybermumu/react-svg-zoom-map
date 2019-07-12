@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A react map component can load TopoJson with county, town, village layer.",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cybermumu/react-svg-zoom-map.git"
+  },
   "scripts": {
     "dev": "webpack-dev-server --open --watch",
     "prod": "webpack --mode=production"
