@@ -1,0 +1,39 @@
+.react-svg-zoom-map {
+  overflow: hidden;
+}
+
+.react-svg-zoom-map .controls {
+  position: absolute;
+  z-index: 2
+}
+
+.react-svg-zoom-map >svg {
+  display: block;
+  overflow: visible;
+  position: relative;
+  z-index: 0;
+}
+
+.react-svg-zoom-map .map-item-path {
+  fill: #eee;
+  stroke: #000;
+  stroke-width: 0.5;
+  transition: fill 0.3s;
+  cursor: pointer;
+}
+
+.react-svg-zoom-map .map-item-path:hover {
+  fill: #aaa;
+}
+
+.react-svg-zoom-map .map-g {
+  will-change: transform;
+}
+
+.react-svg-zoom-map .pin {
+  cursor: pointer;
+}
+
+.react-svg-zoom-map .pin.-layer-0 {
+  pointer-events: none;
+}

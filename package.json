@@ -1,0 +1,42 @@
+{
+  "name": "react-svg-zoom-map",
+  "version": "1.0.0",
+  "description": "A react map component can load TopoJson with county, town, village layer.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --open --watch",
+    "prod": "webpack --mode=production"
+  },
+  "keywords": [
+    "react",
+    "map",
+    "topojson",
+    "d3",
+    "svg",
+    "taiwan"
+  ],
+  "author": "CyberMuMu",
+  "license": "ISC",
+  "dependencies": {
+    "animejs": "^3.0.1",
+    "axios": "^0.19.0",
+    "css-loader": "^3.0.0",
+    "d3": "^5.9.7",
+    "prop-types": "^15.7.2",
+    "react": "^16.2",
+    "react-dom": "^16.2",
+    "style-loader": "^0.23.1",
+    "topojson-client": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
+  }
+}
