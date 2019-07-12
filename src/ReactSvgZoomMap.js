@@ -13,9 +13,9 @@ export default class ReactSvgZoomMap extends Component {
     
     className: PropTypes.string,
 
-    countyJsonSrc: PropTypes.string,
-    townJsonSrc: PropTypes.string,
-    villageJsonSrc: PropTypes.string,
+    countyJsonSrc: PropTypes.string.isRequired,
+    townJsonSrc: PropTypes.string.isRequired,
+    villageJsonSrc: PropTypes.string.isRequired,
     
     pins: PropTypes.array,
     pinRadiusWithLayer: PropTypes.array,
@@ -66,10 +66,6 @@ export default class ReactSvgZoomMap extends Component {
   componentDidMount() {
     const { loadTopoJson, calcSvg } = this;
     const { countyJsonSrc, townJsonSrc, villageJsonSrc } = this.props;
-
-    !countyJsonSrc && this.setState({ countyJsonData: require('./topojsons/taiwan-county.json') }, calcSvg)
-    !townJsonSrc && this.setState({ townJsonData: require('./topojsons/taiwan-town.json') }, calcSvg)
-    !villageJsonSrc && this.setState({ villageJsonData: require('./topojsons/taiwan-village.json') }, calcSvg)
 
     countyJsonSrc && loadTopoJson(countyJsonSrc).then( countyJsonData => this.setState({ countyJsonData }, calcSvg))
     townJsonSrc && loadTopoJson(townJsonSrc).then( townJsonData => this.setState({ townJsonData }, calcSvg))

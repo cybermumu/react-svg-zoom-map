@@ -1,5 +1,5 @@
 # react-svg-zoom-map
-> 擁有三層放大功能的地圖React Component，地圖圖形資料使用Topojson，並透過D3繪製svg。
+擁有三層放大功能的台灣地圖 React Component，地圖圖形資料使用 Topojson，並透過 D3 繪製 svg。
 
 ## Usage
 
@@ -46,17 +46,17 @@
 
 自訂此 Component 的 className。
 
-#### `countyJsonSrc?: string;`
+#### `countyJsonSrc: string;`
 
-導入外部的縣市界圖 TopoJson Source，此值若留空，系統會自動載入預設資料。
+導入外部的縣市界圖 TopoJson Source，此值為必填。
 
-#### `townJsonSrc?: string;`
+#### `townJsonSrc: string;`
 
-導入外部的鄉鎮界圖 TopoJson Source，此值若留空，系統會自動載入預設資料。
+導入外部的鄉鎮界圖 TopoJson Source，此值為必填。
 
-#### `villageJsonSrc?: string;`
+#### `villageJsonSrc: string;`
 
-導入外部的村里界圖 TopoJson Source，此值若留空，系統會自動載入預設資料。
+導入外部的村里界圖 TopoJson Source，此值為必填。
 
 #### `pins?: array[{ title: string, county: string, town: string, village: string, location: [lat: number, long: number] }];`
 
