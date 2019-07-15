@@ -1,6 +1,26 @@
 # react-svg-zoom-map
 擁有三層放大功能的台灣地圖 React Component，地圖圖形資料使用 Topojson，並透過 D3 繪製 svg。
 
+## Installation
+
+#### 透過 NPM 安裝：
+
+`npm install react-svg-zoom-map --save`
+
+## Development
+
+#### 開啟測試伺服器並執行 example 
+
+`npm run watch`
+
+#### develop 建置
+
+`npm run dev`
+
+#### production 建置
+
+`npm run build`
+
 ## Usage
 
 ```jsx
@@ -8,6 +28,9 @@
 
   export default () => (
     <ReactSvgZoomMap 
+      countyJsonSrc="/topojsons/taiwan-county.json"
+      townJsonSrc="/topojsons/taiwan-town.json"
+      villageJsonSrc="/topojsons/taiwan-village.json"
       onAreaClick={ console.log }
       onPinClick={ console.log }
       pins={[

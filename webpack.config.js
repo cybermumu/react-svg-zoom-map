@@ -3,16 +3,9 @@ const path = require('path');
 
 
 module.exports = {
-  context: __dirname,
-  entry: {
-    main: './src/index.js'
-  },
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'react-svg-zoom-map.min.js',
-    sourceMapFilename: '[file].map',
-    library: 'react-svg-zoom-map',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    library: 'ReactSvgZoomMap'
   },
   externals: {
     'react': {
@@ -47,16 +40,17 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['.js'],
+    alias: {
+      "react-svg-zoom-map": path.resolve(__dirname, "./src")
+    }
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    compress: true,
+    contentBase: path.join(__dirname, 'example'),
     port: 3000,
     host: '0.0.0.0'
   },
   plugins: [
-    // Scope hoisting
     new webpack.optimize.ModuleConcatenationPlugin(),
   ]
 };

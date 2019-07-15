@@ -8,8 +8,9 @@
     "url": "git@github.com:cybermumu/react-svg-zoom-map.git"
   },
   "scripts": {
-    "dev": "webpack-dev-server --open --watch --entry ./dev.js",
-    "prod": "webpack --mode=production"
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --entry ./dev.js --output-filename bundle.js --output-path example",
+    "watch": "webpack-dev-server --mode development --open --watch --entry ./dev.js --output-filename bundle.js"
   },
   "keywords": [
     "react",

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactSvgZoomMap from './src/index.js'
+import ReactSvgZoomMap from 'react-svg-zoom-map';
 
 ReactDOM.render(
   <ReactSvgZoomMap 

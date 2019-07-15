@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import './ReactSvgZoomMap.css'
 
-export default class ReactSvgZoomMap extends Component {
+export default class ReactSvgZoomMap extends React.Component {
 
   static propTypes = {
     
