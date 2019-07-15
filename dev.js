@@ -4,9 +4,9 @@ import ReactSvgZoomMap from 'react-svg-zoom-map';
 
 ReactDOM.render(
   <ReactSvgZoomMap 
-    countyJsonSrc="/topojsons/taiwan-county.json"
-    townJsonSrc="/topojsons/taiwan-town.json"
-    villageJsonSrc="/topojsons/taiwan-village.json"
+    countyJsonSrc="topojsons/taiwan-county.json"
+    townJsonSrc="topojsons/taiwan-town.json"
+    villageJsonSrc="topojsons/taiwan-village.json"
 
     onAreaClick={ console.log }
     onPinClick={ console.log }
