@@ -21,7 +21,7 @@
     "taiwan"
   ],
   "author": "CyberMuMu",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "animejs": "^3.0.1",
     "axios": "^0.19.0",
