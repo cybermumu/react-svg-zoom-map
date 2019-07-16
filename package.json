@@ -2,15 +2,15 @@
   "name": "react-svg-zoom-map",
   "version": "1.0.1",
   "description": "A react map component can load TopoJson with county, town, village layer.",
-  "main": "src/index.js",
+  "main": "dist/main.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:cybermumu/react-svg-zoom-map.git"
   },
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --mode development --entry ./dev.js --output-filename bundle.js --output-path example",
-    "watch": "webpack-dev-server --mode development --open --watch --entry ./dev.js --output-filename bundle.js"
+    "dev": "webpack --mode development --entry ./src/dev.js --output-filename bundle.js --output-path example",
+    "watch": "webpack-dev-server --mode development --open --watch --entry ./src/dev.js --output-filename bundle.js"
   },
   "keywords": [
     "react",
@@ -25,12 +25,10 @@
   "dependencies": {
     "animejs": "^3.0.1",
     "axios": "^0.19.0",
-    "css-loader": "^3.0.0",
     "d3": "^5.9.7",
     "prop-types": "^15.7.2",
     "react": "^16.2",
     "react-dom": "^16.2",
-    "style-loader": "^0.23.1",
     "topojson-client": "^3.0.0"
   },
   "devDependencies": {
@@ -40,6 +38,8 @@
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
+    "css-loader": "^3.0.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2"

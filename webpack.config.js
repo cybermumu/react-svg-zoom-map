@@ -20,8 +20,16 @@ module.exports = {
       'amd': 'react-dom',
       'root': 'ReactDOM'
     },
+    'prop-types': {
+      'commonjs': 'prop-types',
+      'commonjs2': 'prop-types',
+      'amd': 'prop-types',
+      'root': 'PropTypes'
+    },
     d3: 'd3',
-    topojson: 'topojson-client'
+    topojson: 'topojson-client',
+    animejs: 'animejs',
+    axios: 'axios',
   },
   module: {
     rules: [
