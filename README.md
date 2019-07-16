@@ -28,9 +28,9 @@
 
   export default () => (
     <ReactSvgZoomMap 
-      countyJsonSrc="/topojsons/taiwan-county.json"
-      townJsonSrc="/topojsons/taiwan-town.json"
-      villageJsonSrc="/topojsons/taiwan-village.json"
+      countyJsonSrc="https://cybermumu.github.io/react-svg-zoom-map/example/topojsons/taiwan-county.json"
+      townJsonSrc="https://cybermumu.github.io/react-svg-zoom-map/example/topojsons/taiwan-town.json"
+      villageJsonSrc="https://cybermumu.github.io/react-svg-zoom-map/example/topojsons/taiwan-village.json"
       onAreaClick={ console.log }
       onPinClick={ console.log }
       pins={[
