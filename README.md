@@ -1,5 +1,7 @@
 # react-svg-zoom-map
-擁有三層放大功能的台灣地圖 React Component，地圖圖形資料使用 Topojson，並透過 D3 繪製 svg。
+擁有三層放大功能的台灣地圖 React Component，地圖圖形資料使用 Topojson，並透過 D3 繪製 
+
+## [Live Demo](https://cybermumu.github.io/react-svg-zoom-map/example/)
 
 ## Installation
 
