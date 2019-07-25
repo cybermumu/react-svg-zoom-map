@@ -14,8 +14,8 @@ export default class ReactSvgZoomMap extends React.Component {
     className: PropTypes.string,
 
     countyJsonSrc: PropTypes.string.isRequired,
-    townJsonSrc: PropTypes.string.isRequired,
-    villageJsonSrc: PropTypes.string.isRequired,
+    townJsonSrc: PropTypes.string,
+    villageJsonSrc: PropTypes.string,
     
     pins: PropTypes.array,
     pinRadiusWithLayer: PropTypes.array,
@@ -85,11 +85,14 @@ export default class ReactSvgZoomMap extends React.Component {
   handleResize = () => { this.calcSvg(); }
 
   handleMapItemClick = (...selectArray) => {
-
+    const {townMapData, villageMapData} = this.state;
     const { onAreaClick } = this.props;
     
     selectArray = selectArray.filter(item => item !== '');
     onAreaClick && onAreaClick(selectArray);
+
+    if (selectArray.length >= 1 && townMapData == null) return;
+    if (selectArray.length >= 2 && villageMapData == null) return;
 
     if (this.state.animating || selectArray.length > 2) return;
     if (selectArray.length === 3) selectArray[2] = ''
@@ -139,7 +142,7 @@ export default class ReactSvgZoomMap extends React.Component {
 
   calcSvg = () => {
     const { countyJsonData, townJsonData, villageJsonData } = this.state;
-    if ( !countyJsonData || !townJsonData || !villageJsonData ) return;
+    if ( !countyJsonData ) return;
 
     const mapCompRootRect = this.mapCompRoot.current.getBoundingClientRect();
     const svgScale = mapCompRootRect.width > mapCompRootRect.height ?
@@ -154,8 +157,8 @@ export default class ReactSvgZoomMap extends React.Component {
       () => {
         this.setState({
           countyMapData: this.topoSvgConverter(countyJsonData),
-          townMapData: this.topoSvgConverter(townJsonData),
-          villageMapData: this.topoSvgConverter(villageJsonData)
+          townMapData: townJsonData ? this.topoSvgConverter(townJsonData) : null,
+          villageMapData: villageJsonData ? this.topoSvgConverter(villageJsonData) : null
         })
       }
     );
@@ -192,6 +195,7 @@ export default class ReactSvgZoomMap extends React.Component {
         countyName: feature.properties.COUNTYNAME,
         townName: feature.properties.TOWNNAME || '',
         villageName: feature.properties.VILLNAME || '',
+        geoJsonObject: feature
       })
     });
     
@@ -335,7 +339,7 @@ export default class ReactSvgZoomMap extends React.Component {
       countyMapData, townMapData, villageMapData, nowSelect
     } = this.state;
 
-    const loaded = (countyMapData && townMapData && villageMapData);
+    const loaded = (countyMapData);
 
     const { className } = this.props;
 
@@ -391,15 +395,26 @@ export default class ReactSvgZoomMap extends React.Component {
   )
 
   mapPinsRender = () => {
-    const { nowSelect } = this.state;
+    const { nowSelect, countyMapData, townMapData } = this.state;
     const { pins } = this.props;
 
     return (<>
       {
         pins && 
         pins.filter(item => {
-          const { county, town, village } = item;
-          return (county + town + village).indexOf(this.getNowSelectString()) >= 0;
+          const depth = nowSelect.length;
+          let nowArea = {};
+
+          if (depth === 0) {
+            return item;
+          }
+          else if (depth === 1) {
+            nowArea = countyMapData.find(item => item.countyName == nowSelect[0]);
+          }
+          else if (depth === 2) {
+            nowArea = townMapData.find(item => item.countyName == nowSelect[0] && item.townName == nowSelect[1]);
+          }
+          return d3.geoContains(nowArea.geoJsonObject, [item.location[1], item.location[0]]) ? item : null;
         }).
         map((item, index) => {
           const point = this.getProjection()([item.location[1], item.location[0]]);
