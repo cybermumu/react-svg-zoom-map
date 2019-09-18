@@ -27,12 +27,19 @@ export default class ReactSvgZoomMap extends React.Component {
 
     zoomDelay: PropTypes.number,
     zoomDuration: PropTypes.number,
+
+    county: PropTypes.string,
+    town: PropTypes.string,
+    village: PropTypes.string,
   }
 
   static defaultProps = {
     pinRadiusWithLayer: [2, 0.3, 0.15],
     zoomDelay: 100,
     zoomDuration: 1000,
+    county: '',
+    town: '',
+    village: ''
   }
 
   state = {
@@ -78,18 +85,23 @@ export default class ReactSvgZoomMap extends React.Component {
     window.removeEventListener('resize', this.handleResize);
   }
 
+  componentDidUpdate( prevProps ) 
+  {
+    const { county, town, village } = this.props;
+    if (county != prevProps.county || town != prevProps.town || village != prevProps.village) {
 
+      this.handleAreaUpdate(county, town, village);
+    }
+  }
 
   /* Event Handler */
 
   handleResize = () => { this.calcSvg(); }
 
-  handleMapItemClick = (...selectArray) => {
-    const {townMapData, villageMapData} = this.state;
-    const { onAreaClick } = this.props;
-    
-    selectArray = selectArray.filter(item => item !== '');
-    onAreaClick && onAreaClick(selectArray);
+  handleAreaUpdate = (...selectArray) => {
+    const { townMapData, villageMapData, nowSelect } = this.state;
+
+    selectArray = selectArray.filter(item => item)
 
     if (selectArray.length >= 1 && townMapData == null) return;
     if (selectArray.length >= 2 && villageMapData == null) return;
@@ -97,19 +109,22 @@ export default class ReactSvgZoomMap extends React.Component {
     if (this.state.animating || selectArray.length > 2) return;
     if (selectArray.length === 3) selectArray[2] = ''
 
+    const isZoomIn = selectArray.length > nowSelect.length;
+
     this.setState(
-      { nowSelect: selectArray.filter(item => item) },
-      () => this.executeAnimate(true)
+      { nowSelect: selectArray },
+      () => this.executeAnimate(isZoomIn)
     );
   }
 
-  handleMapItemHover = (...selectArray) => {
-    const { onAreaHover } = this.props;
-    
-    if (!onAreaHover) return;
+  handleMapItemClick = ( county, town, village, e) => {
+    const { onAreaClick } = this.props;
+    onAreaClick && onAreaClick([county, town, village], e);
+  }
 
-    selectArray = selectArray.filter(item => item !== '');
-    onAreaHover(selectArray);
+  handleMapItemHover = ( county, town, village, e) => {
+    const { onAreaHover } = this.props;
+    onAreaHover && onAreaHover([county, town, village], e);
   }
 
   handleUpperLayerClick = () => {
@@ -118,23 +133,18 @@ export default class ReactSvgZoomMap extends React.Component {
     const { nowSelect } = this.state;
     const { onAreaClick } = this.props;
 
-    const selectArray = nowSelect.slice(0, -1).filter(item => item !== '');
+    const selectArray = nowSelect.slice(0, -1).filter(item => item);
     onAreaClick && onAreaClick(selectArray);
-
-    this.setState(
-      { nowSelect: selectArray },
-      () => this.executeAnimate(false)
-    )
   }
 
-  handlePinClick = pinItem => {
+  handlePinClick = (pinItem, e) => {
     const { onPinClick } = this.props;
-    onPinClick && onPinClick(pinItem);
+    onPinClick && onPinClick(pinItem, e);
   }
 
-  handlePinHover = pinItem => {
+  handlePinHover = (pinItem, e) => {
     const { onPinHover } = this.props;
-    onPinHover && onPinHover(pinItem);
+    onPinHover && onPinHover(pinItem, e);
   }
   
 
@@ -347,7 +357,10 @@ export default class ReactSvgZoomMap extends React.Component {
       <div className={'react-svg-zoom-map' + (className ? ` ${className}` : '') } ref={this.mapCompRoot}>
         
         <div className="controls">
-          { loaded && <button onClick={this.handleUpperLayerClick}>上一層</button> }
+          { loaded && nowSelect.length > 0 && <button onClick={this.handleUpperLayerClick}>上一層</button> }
+        </div>
+
+        <div className="labels">
           { this.getNowSelectString() }
           { !loaded ? 'Loading...' : '' }
         </div>
@@ -385,8 +398,8 @@ export default class ReactSvgZoomMap extends React.Component {
   mapItemRender = (item, index, className) => (
     <g 
       className={'map-item ' + className} key={className + index} 
-      onClick={ () => this.handleMapItemClick(item.countyName, item.townName, item.villageName) }
-      onMouseEnter={ () => this.handleMapItemHover(item.countyName, item.townName, item.villageName) }
+      onClick={ e => this.handleMapItemClick(item.countyName, item.townName, item.villageName, e) }
+      onMouseEnter={ e => this.handleMapItemHover(item.countyName, item.townName, item.villageName, e) }
     >
       <path d={item.d} id={item.location} className="map-item-path" >
         <title>{item.countyName + item.townName + item.villageName}</title>
@@ -421,8 +434,8 @@ export default class ReactSvgZoomMap extends React.Component {
           return (
             <circle 
               className={`pin -layer-${nowSelect.length}`} key={`pin${index}`} 
-              onClick={ () => {this.handlePinClick(item)} }
-              onMouseEnter={ () => {this.handlePinHover(item)} }
+              onClick={ e => {this.handlePinClick(item, e)} }
+              onMouseEnter={ e => {this.handlePinHover(item, e)} }
               transform={`translate(${point[0].toFixed(2)} ${point[1].toFixed(2)})`} 
               cx="0%" cy="0%" r="1"
             >

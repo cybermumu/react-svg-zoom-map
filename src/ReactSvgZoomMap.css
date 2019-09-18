@@ -7,6 +7,11 @@
   z-index: 2
 }
 
+.react-svg-zoom-map .labels {
+  position: absolute;
+  z-index: 1
+}
+
 .react-svg-zoom-map >svg {
   display: block;
   overflow: visible;
