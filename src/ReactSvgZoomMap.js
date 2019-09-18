@@ -36,7 +36,7 @@ export default class ReactSvgZoomMap extends React.Component {
   static defaultProps = {
     pinRadiusWithLayer: [2, 0.3, 0.15],
     zoomDelay: 100,
-    zoomDuration: 1000,
+    zoomDuration: 700,
     county: '',
     town: '',
     village: ''
@@ -89,7 +89,6 @@ export default class ReactSvgZoomMap extends React.Component {
   {
     const { county, town, village } = this.props;
     if (county != prevProps.county || town != prevProps.town || village != prevProps.village) {
-
       this.handleAreaUpdate(county, town, village);
     }
   }
@@ -99,7 +98,12 @@ export default class ReactSvgZoomMap extends React.Component {
   handleResize = () => { this.calcSvg(); }
 
   handleAreaUpdate = (...selectArray) => {
-    const { townMapData, villageMapData, nowSelect } = this.state;
+    const { countyMapData, townMapData, villageMapData, nowSelect } = this.state;
+    const [ county, town, village ] = selectArray;
+
+    if (county && !countyMapData.find( _ => _.countyName === county)) return;
+    if (town && !townMapData.find( _ => _.townName === town)) return;
+    if (village && !countyMapData.find( _ => _.villageName === village)) return;
 
     selectArray = selectArray.filter(item => item)
 
@@ -134,7 +138,7 @@ export default class ReactSvgZoomMap extends React.Component {
     const { onAreaClick } = this.props;
 
     const selectArray = nowSelect.slice(0, -1).filter(item => item);
-    onAreaClick && onAreaClick(selectArray);
+    onAreaClick && onAreaClick([selectArray[0] || '', selectArray[1] || '', selectArray[2] || '']);
   }
 
   handlePinClick = (pinItem, e) => {
@@ -170,6 +174,7 @@ export default class ReactSvgZoomMap extends React.Component {
           townMapData: townJsonData ? this.topoSvgConverter(townJsonData) : null,
           villageMapData: villageJsonData ? this.topoSvgConverter(villageJsonData) : null
         })
+        this.executeAnimate();
       }
     );
   }
@@ -213,84 +218,23 @@ export default class ReactSvgZoomMap extends React.Component {
   }
 
   executeAnimate = (isZoomIn = true) => {
-
-    const { nowSelect, svgDisplayParams } = this.state;
+    const { nowSelect } = this.state;
     const { pinRadiusWithLayer, zoomDuration, zoomDelay } = this.props;
 
     const svgRect = this.mapSvgRoot.current.getBoundingClientRect();
-    const groupRect = this.mapSvgRootGroup.current.getBoundingClientRect();
-
-    let computedGroupRect = {
-      top: groupRect.top - svgRect.top,
-      left: groupRect.left - svgRect.left,
-      width: groupRect.width,
-      height: groupRect.height
-    }
-
-    if (nowSelect.length === 0) {
-      computedGroupRect = {
-        top: 0,
-        left: 0,
-        width: svgRect.width,
-        height: svgRect.height
-      }
-    }
-
-    let scale = svgRect.width / computedGroupRect.width < svgRect.height / computedGroupRect.height ? 
-            svgRect.width / computedGroupRect.width : 
-            svgRect.height / computedGroupRect.height;
-
-    let newSvgDisplayParams = [...svgDisplayParams];
-    const oldSvgDisplayParams = {...newSvgDisplayParams.slice(-1)[0]};
-    
-
-    if (isZoomIn) {
-      const sumScale = newSvgDisplayParams.map(item => item.scale).reduce((acc, curr) => acc * curr);
-      const sumLeft = newSvgDisplayParams.map(item => item.left / item.scale).reduce((acc, curr) =>  acc + curr * scale * sumScale);
-      const sumTop = newSvgDisplayParams.map(item => item.top / item.scale).reduce((acc, curr) =>  acc + curr * scale * sumScale);
-      
-      newSvgDisplayParams[nowSelect.length] = {
-        scale: scale * sumScale,
-        left: -computedGroupRect.left * scale + sumLeft,
-        top: -computedGroupRect.top * scale + sumTop
-      };
-    } else {
-      newSvgDisplayParams = newSvgDisplayParams.slice(0, -1);
-    }
-
-    if (newSvgDisplayParams.length === 0) {
-      newSvgDisplayParams = [{ scale: 1, top: 0, left: 0 }];
-    }
-
-    const tmpSvgDisplayParam = newSvgDisplayParams.slice(-1)[0];
-
-    this.setState({ animating: true, nowScale: tmpSvgDisplayParam.scale, svgDisplayParams: newSvgDisplayParams })
-
-    const gTransform = {
-      scale: oldSvgDisplayParams.scale,
-      translateX: oldSvgDisplayParams.left,
-      translateY: oldSvgDisplayParams.top,
-    };
-
-    anime({
-      targets: this.mapSvgRoot.current,
-      translateX: (svgRect.width * 0.5 - computedGroupRect.width * scale * 0.5).toFixed(2),
-      translateY: (svgRect.height * 0.5 - computedGroupRect.height * scale * 0.5).toFixed(2),
-      easing: 'easeOutQuint',
-      duration: zoomDuration,
-      delay: zoomDelay
-    });
+    const tRect = this.mapSvgRootGroup.current.getBBox();
+    const cScale = svgRect.width / tRect.width;
 
     anime({
       targets: this.mapSvgRoot.current.querySelectorAll('.map-item-path'),
       keyframes: isZoomIn ? 
         [
-          {strokeWidth: 1 / tmpSvgDisplayParam.scale},
-          {strokeWidth: 0.5 / tmpSvgDisplayParam.scale},
+          {strokeWidth: 1 / cScale},
+          {strokeWidth: 0.5 / cScale},
         ]:
         [
-          {strokeWidth: 0.1 / tmpSvgDisplayParam.scale},
-          {strokeWidth: 0.5 / tmpSvgDisplayParam.scale},
+          {strokeWidth: 0.5 / cScale},
+          {strokeWidth: 0.5 / cScale},
         ]
       ,
       easing: 'easeOutQuint',
@@ -303,13 +247,17 @@ export default class ReactSvgZoomMap extends React.Component {
       easing: 'easeOutQuint',
       duration: zoomDuration,
       delay: zoomDelay,
-    })
+    });
+
+
+    let rootRect = this.mapSvgRoot.current.viewBox.baseVal;
 
     anime({
-      targets: gTransform,
-      translateX: tmpSvgDisplayParam.left,
-      translateY: tmpSvgDisplayParam.top,
-      scale: tmpSvgDisplayParam.scale,
+      targets: rootRect,
+      x: tRect.x,
+      y: tRect.y,
+      width: tRect.width,
+      height: tRect.height,
       easing: 'easeOutQuint',
       duration: zoomDuration,
       delay: zoomDelay,
@@ -317,10 +265,11 @@ export default class ReactSvgZoomMap extends React.Component {
         this.setState({ animating: false })
       },
       update: () => {
-        this.mapSvgRootGroup.current.setAttribute('transform', `translate(${gTransform.translateX} ${gTransform.translateY}) scale(${gTransform.scale})`);
+        this.mapSvgRoot.current.setAttribute('viewBox', `${rootRect.x} ${rootRect.y} ${rootRect.width} ${rootRect.height}`);
       }
     });
 
+    return;
   }
   
 
